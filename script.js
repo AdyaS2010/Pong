@@ -33,3 +33,54 @@ function drawNet() {
         drawRect(canvas.width / 2 - 1, i, 2, 10, '#fff');
     }
 }
+
+function moveBall() {
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+
+    if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
+        ballSpeedY = -ballSpeedY;
+    }
+
+    if (ballX + ballRadius > canvas.width) {
+        ballSpeedX = -ballSpeedX;
+    }
+
+    if (ballX - ballRadius < 0) {
+        ballSpeedX = -ballSpeedX;
+    }
+}
+
+function movePaddles() {
+    if (ballY > aiY + paddleHeight / 2) {
+        aiY += 6;
+    } else {
+        aiY -= 6;
+    }
+}
+
+function draw() {
+    drawRect(0, 0, canvas.width, canvas.height, '#000');
+    drawNet();
+    drawRect(0, playerY, paddleWidth, paddleHeight, '#fff');
+    drawRect(canvas.width - paddleWidth, aiY, paddleWidth, paddleHeight, '#fff');
+    drawCircle(ballX, ballY, ballRadius, '#fff');
+}
+
+function update() {
+    moveBall();
+    movePaddles();
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+canvas.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    playerY = event.clientY - rect.top - paddleHeight / 2;
+});
+
+gameLoop();
